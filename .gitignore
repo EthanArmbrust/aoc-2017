@@ -33,3 +33,6 @@
 
 # Mac Files
 .DS_Store
+
+#Vim Files
+*.swp
