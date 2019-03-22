@@ -1,7 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <algorithm>
 #include <stack>
 
 using namespace std;
@@ -41,13 +39,10 @@ int main(){
             else{
                 gc++;
             }
-        }
-        
+        }   
     }
-
     cout << sum << endl;
     cout << gc << endl;
 
 	return 0;
 }
-
