@@ -5,25 +5,24 @@
 #include <algorithm>
 #include <map>
 
-using namespace std;
 
-void countChildren(int parent, vector<int> &list);
+void countChildren(int parent, std::vector<int> &list);
 
-map<int, vector<int>> im;
-vector<vector<int>> countedItems;
+std::map<int, std::vector<int>> im;
+std::vector<std::vector<int>> countedItems;
 
 int main(){
 
-	ifstream infile("2017-12.txt");
-	vector<vector <string> > inputList;
+	std::ifstream infile("2017-12.txt");
+	std::vector<std::vector<std::string>> inputList;
 
-	string s;
+	std::string s;
 	while(getline(infile,s)){
 
-		vector<string> lineData;
-		stringstream lineStream(s);
+		std::vector<std::string> lineData;
+		std::stringstream lineStream(s);
 
-		string value;
+		std::string value;
 
 		while(lineStream >> value){
             if(value != "<->"){
@@ -38,27 +37,26 @@ int main(){
 
     for(auto line : inputList){
         for(int i = 1; i < line.size(); i++){
-            im[stoi(line[0])].push_back(stoi(line[i]));
+            im[std::stoi(line[0])].push_back(std::stoi(line[i]));
         }
     }
 
-    //select next int
     int current = 0;
 
-    vector<int> unused;
+    std::vector<int> unused;
     for(int j = 0; j < 2000; j++){
         unused.push_back(j);
     }
 
     while(unused.size() > 0){
-        vector<int> workspace;
+        std::vector<int> workspace;
         countChildren(current, workspace);
-        sort(workspace.begin(), workspace.end());
+        std::sort(workspace.begin(), workspace.end());
         countedItems.push_back(workspace);
 
         for(auto list : countedItems){
-            vector<int> temp(2000);
-            vector<int>::iterator it;
+            std::vector<int> temp(2000);
+            std::vector<int>::iterator it;
             it = set_difference(unused.begin(), unused.end(), list.begin(),
                                                  list.end(), temp.begin());
             temp.resize(it - temp.begin());
@@ -68,12 +66,12 @@ int main(){
     
     }
 
-    cout << countedItems.size() << endl; 
+    std::cout << countedItems.size() << std::endl; 
 
 	return 0;
 }
 
-void countChildren(int parent, vector<int> &list){
+void countChildren(int parent, std::vector<int> &list){
     list.push_back(parent);
     for(auto child : im.at(parent)){
         if(find(list.begin(), list.end(), child) == list.end()){
