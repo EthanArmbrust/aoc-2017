@@ -42,82 +42,25 @@ int main(){
 
     int sum = 1;
     int offset = -1;
+    caught.push_back(-1);
     
-    while(sum != 0 || caught.size() != 0){
+    while(caught.size() != 0){
+LOOP_START:
         sum = 0;
         offset++;
         caught.clear();
 
-        for(auto &mp : scanner){
-            mp.second = 0;
-        }
-
-        for(int b = 0; b < direction.size(); b++){
-            direction[b] = false;
-        }
-
-        for(int d = 0; d < offset; d++){
-            for(auto &mp : scanner){
-                int dep = mp.first;
-                int pos = mp.second;
-                //cout << mp.first << ", " << mp.second << endl;
-                if(mp.second == firewall[dep] - 1){
-                    direction[dep] = true;
-                }
-                if(mp.second == 0){
-                    direction[dep] = false;
-                }
-                if(direction[dep]){
-                    mp.second -= 1;
-                }
-                else{
-                    mp.second += 1;
-                }
-            }
-        }
-        //cout << "delay " << offset << endl;
-        for(auto &mp : scanner){
-            //cout << mp.first << ", " << mp.second << endl;
-        }
-        //cout << "\n";
-
         for(int t = 0; t < totalDepth; t++){
-            if(scanner.find(t) != scanner.end()){
-                if(scanner.at(t) == 0){
-                    //cout << "caught at " << t << endl;
-                    caught.push_back(t);
-                }
-            }
-            
-            //cout << "Scanner positions at time " << t << endl;
-
-            for(auto &mp : scanner){
-                int dep = mp.first;
-                int pos = mp.second;
-                //cout << mp.first << ", " << mp.second << endl;
-                if(mp.second == firewall[dep] - 1){
-                    direction[dep] = true;
-                }
-                if(mp.second == 0){
-                    direction[dep] = false;
-                }
-                if(direction[dep]){
-                    mp.second -= 1;
-                }
-                else{
-                    mp.second += 1;
+            if(firewall[t] != 0){
+                int range = firewall[t];
+                if((t + offset) % ((range * 2) - 2) == 0){
+                    goto LOOP_START;
                 }
             }
         }
-
-
-        //cout << "Caught at following positions: ";
         for(auto in : caught){
             sum += (firewall[in] * in);
-            //cout << in << ", ";
         }
-        //cout << "\n";
-        //cout << "Sum: " << sum << endl;
     }
 
     cout << offset << endl;
