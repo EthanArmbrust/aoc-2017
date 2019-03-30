@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 
 using namespace std;
@@ -8,51 +9,41 @@ using namespace std;
 int main(){
 
 	ifstream infile("2017-18.txt");
-	vector<string> inputList;
+	vector<vector<string>> inputList;
 
-    vector<int> vals(26,0);
-    vector<int> snd(26,0);
+    vector<long> vals(26,0);
+    int snd;
 
 	string s;
 	while(getline(infile,s)){
-		inputList.push_back(s);
+    
+        vector<string> temp;
+        stringstream ss(s);
+        string word;
+        while(ss >> word){
+            temp.push_back(word);
+        } 
+
+		inputList.push_back(temp);
 	}
 
-
     for(int i = 0; i < inputList.size(); i++){
-        string &command = inputList[i];
-        int reg = command[4] - 'a';
-        string second;
-        if(command.length() >= 7){
-            second = command.substr(6);
-        }
-        int reg2;
-    
-        bool x_reg = false;
-        bool y_reg = false;
+        vector<string> &command = inputList[i];
 
-        if(command[4] >= 'a' && command[4] <= 'z'){
-            reg = command[4] - 'a';
-            x_reg = true;
+        if(command[0] == "snd"){
+            int reg = command[1][0] - 'a';
+            cout << "Playing register " << command[1] << " with freq " << vals[reg] << endl;
+            snd = vals[reg];
         }
-        else{
-            reg = stoi(command.substr(4,1));
-        }
-    
-        if(second[0] >= 'a' && second[0] <= 'z'){
-            reg2 = second[0] - 'a';
-            y_reg = true;
-        }
-        else{
-            reg2 = stoi(second);
-        }
+        else if(command[0] == "set"){
+            int reg = command[1][0] - 'a';
+            bool y_reg = command[2][0] >= 'a' && command[2][0] <= 'z';
+            int reg2;
+            if(!y_reg){
+                reg2 = stoi(command[2]);
+            }
+            else reg2 = command[2][0] - 'a';
 
-        
-
-        if(command.substr(0,3) == "snd"){
-            snd[reg] = vals[reg];
-        }
-        else if(command.substr(0,3) == "set"){
             if(y_reg){
                 vals[reg] = vals[reg2];
             }
@@ -60,7 +51,15 @@ int main(){
                 vals[reg] = reg2;
             }
         }
-        else if(command.substr(0,3) == "add"){
+        else if(command[0] == "add"){
+            int reg = command[1][0] - 'a';
+            bool y_reg = command[2][0] >= 'a' && command[2][0] <= 'z';
+            int reg2;
+            if(!y_reg){
+                reg2 = stoi(command[2]);
+            }
+            else reg2 = command[2][0] - 'a';
+
             if(y_reg){
                 vals[reg] += vals[reg2];
             }
@@ -68,7 +67,15 @@ int main(){
                 vals[reg] += reg2;
             }
         }
-        else if(command.substr(0,3) == "mul"){
+        else if(command[0] == "mul"){
+            int reg = command[1][0] - 'a';
+            bool y_reg = command[2][0] >= 'a' && command[2][0] <= 'z';
+            int reg2;
+            if(!y_reg){
+                reg2 = stoi(command[2]);
+            }
+            else reg2 = command[2][0] - 'a';
+
             if(y_reg){
                 vals[reg] *= vals[reg2];
             }
@@ -76,7 +83,15 @@ int main(){
                 vals[reg] *= reg2;
             }
         }
-        else if(command.substr(0,3) == "mod"){
+        else if(command[0] == "mod"){
+            int reg = command[1][0] - 'a';
+            bool y_reg = command[2][0] >= 'a' && command[2][0] <= 'z';
+            int reg2;
+            if(!y_reg){
+                reg2 = stoi(command[2]);
+            }
+            else reg2 = command[2][0] - 'a';
+
             if(y_reg){
                 vals[reg] = vals[reg] % vals[reg2];
             }
@@ -84,31 +99,43 @@ int main(){
                 vals[reg] = vals[reg] % reg2;
             }
         }
-        else if(command.substr(0,3) == "rcv"){
+        else if(command[0] == "rcv"){
+            int reg = command[1][0] - 'a';
             if(vals[reg] != 0){
-                vals[reg] = snd[reg];
-                cout << snd[reg] << endl;
+                cout << snd << endl;
                 return 0;
             }
         }
-        else if(command.substr(0,3) == "jgz"){
-            int val;
-            if(y_reg)
-                val = vals[reg2];
-            else val = reg2;
-            
-            int amount;
-            if(x_reg)
-                amount = vals[reg];
-            else amount = reg;
+        else if(command[0] == "jgz"){
 
-            if(amount < 0){
-                amount--;
+            int belowZero;
+            if(command[1][0] >= 'a' && command[1][0] <= 'z'){
+                belowZero = vals[command[1][0] - 'a'];
             }
-            if(val > 0){
-                i += amount;
+            else{
+                belowZero = stoi(command[1]);
+            }
+
+            if(belowZero > 0){
+                int jumpAmount;
+                if(command[2][0] >= 'a' && command[2][0] <= 'z'){
+                    jumpAmount = vals[command[2][0] - 'a'];
+                }
+                else{
+                    jumpAmount = stoi(command[2]);
+                }
+                i += (jumpAmount - 1);
             }
         }
+        cout << "Line Number: " << i << endl;
+        for(char l = 'a'; l <= 'z'; l++){
+            cout << l << " ";
+        }
+        cout << "\n";
+        for(auto v : vals){
+            cout << v << " ";
+        }
+        cout << "\n" << endl;
     }
 
 
