@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <utility>
 
 using namespace std;
 
@@ -24,23 +23,20 @@ int main(){
             cursor = make_pair(0,i);
         }
     }
-    cout << "number of lines " << inputList.size() << endl;
 
-    bool end = false;
     Direction dir = down;
     string result;
     int steps = 0;
     
-    while(!end){
+    while(true){
         char c = inputList[cursor.first][cursor.second];
         if(c == ' '){
             cout << result << endl;
             cout << steps << " steps" << endl;
             return 0;
         }
-        cout << "Cursor pos: " << cursor.first << "," << cursor.second << "   " << c << " " <<  dir << endl;
         if(c == '+'){
-            if(dir == down){
+            if(dir == down || dir == up){
                 if(inputList[cursor.first][cursor.second+1] != ' '){
                     dir = _right;
                 }
@@ -48,23 +44,7 @@ int main(){
                     dir = _left;
                 }
             }
-            else if(dir == up){
-                if(inputList[cursor.first][cursor.second+1] != ' '){
-                    dir = _right;
-                }
-                else if(inputList[cursor.first][cursor.second-1] != ' '){
-                    dir = _left;
-                }
-            }
-            else if(dir == _left){
-                if(inputList[cursor.first-1][cursor.second] != ' '){
-                    dir = up;
-                }
-                else if(inputList[cursor.first+1][cursor.second] != ' '){
-                    dir = down;
-                }
-            }
-            else if(dir == _right){
+            else if(dir == _left || dir == _right){
                 if(inputList[cursor.first-1][cursor.second] != ' '){
                     dir = up;
                 }
@@ -93,8 +73,6 @@ int main(){
         steps++;
     }
    
-    cout << result << endl; 
-
 	return 0;
 }
 

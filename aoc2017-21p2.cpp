@@ -48,7 +48,7 @@ int main(){
     auto merged = merge(splitUp);
 
     
-    for(int t = 0; t < 5; t++){
+    for(int t = 0; t < 18; t++){
 
         //1. Break up canvas into pieces
         auto exploded = split(canvas);
@@ -57,7 +57,7 @@ int main(){
         for(auto row : exploded){
             vector<vector<vector<char>>> newRow;
             for(auto chunk : row){
-                cout << chunk.size() << endl;
+                //cout << chunk.size() << endl;
                 auto flip_x = flip(chunk, false);
                 auto rotate90 = rotate(chunk, true);
                 auto rotate180 = rotate(rotate90, true);
@@ -76,18 +76,18 @@ int main(){
                 possibleAns.push_back(flatten(flip180));
                 possibleAns.push_back(flatten(flip270));
 
-                cout << "Possible permutations: " << endl;
+                //cout << "Possible permutations: " << endl;
                 for(auto stt : possibleAns){
-                    cout << stt << endl;
+                    //cout << stt << endl;
                 }
-                cout << "\n";
+                //cout << "\n";
 
                 string resultString;
 
                 for(int i  = 0; i < inputList.size(); i++){
                     for(string str : possibleAns){
                         if(inputList[i][0] == str){
-                            cout << "found rule" << endl;
+                            //cout << "found rule" << endl;
                             resultString = inputList[i][2];
                         }
                     }
