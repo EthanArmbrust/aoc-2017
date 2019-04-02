@@ -29,11 +29,13 @@ int main(){
     bool end = false;
     Direction dir = down;
     string result;
+    int steps = 0;
     
     while(!end){
         char c = inputList[cursor.first][cursor.second];
         if(c == ' '){
             cout << result << endl;
+            cout << steps << " steps" << endl;
             return 0;
         }
         cout << "Cursor pos: " << cursor.first << "," << cursor.second << "   " << c << " " <<  dir << endl;
@@ -88,6 +90,7 @@ int main(){
         if(dir == _right){
             cursor.second++;
         }
+        steps++;
     }
    
     cout << result << endl; 
