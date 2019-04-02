@@ -50,31 +50,43 @@ int main(){
 	//c = x, y, z as 0,1,2
 
 
-	int time = 100000;
+	int max_time = 20000;
 
-	long minDis = LONG_MAX;
-	long minIdx;
 
-	for(int i = 0; i < master.size(); i++){
-		long distance = 0;
-		for(int j = 0; j < 3; j++){
-			long dirDis = master[i][0][j] + ((master[i][1][j] * time) + (0.5 * master[i][2][j] * (time * time)));
-			distance += abs(dirDis);
+	for(int time = 0; time <= max_time; time++){
+		if(time % 100 == 0){
+			cout << "Time: " << time << " Particles: " << master.size() << endl;
 		}
-		if(distance < minDis){
-			minIdx = i;
-			minDis = distance;
+		for(int i = 0; i < master.size(); i++){
+			vector<long> pos;
+			for(int j = 0; j < 3; j++){
+				master[i][1][j] += master[i][2][j];
+				master[i][0][j] += master[i][1][j];
+			}
 		}
+		//check for collisions
+		vector<int> colIdx;
+		for(int q = 0; q < master.size(); q++){
+			for(int r = q + 1; r < master.size(); r++){
+				if(master[r][0] == master[q][0]){ //collision
+					cout << "collision found " << endl;
+					colIdx.push_back(r);
+					colIdx.push_back(q);
+				}
+			}
+		}
+		//remove duplicates and sort in reverse order
+		sort(colIdx.begin(), colIdx.end());
+		colIdx.erase(unique(colIdx.begin(), colIdx.end()), colIdx.end());
+		reverse(colIdx.begin(), colIdx.end());
+
+		for(int index : colIdx){
+			master.erase(master.begin() + index);
+		}
+
 	}
 
-	cout << "Closest point after " << time << " time is " << minIdx << endl;
-	vector<long> v1 = {1, 2, 3};
-	vector<long> v2 = {1, 2, 3};
-
-	if(v1 == v2)
-		cout << "vectors equal" << endl;
-	else cout << "vectors not equal" << endl;
-	
+	cout << master.size() << endl;
 
 	return 0;
 }
