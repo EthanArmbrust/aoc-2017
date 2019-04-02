@@ -9,46 +9,34 @@ using namespace std;
 
 vector<vector<char>> flip(vector<vector<char>> canvas, bool vertical);
 vector<vector<char>> rotate(vector<vector<char>> canvas, bool clockwise);
+vector<vector<vector<vector<char>>>> split(vector<vector<char>> canvas);
 
 int main(){
 
-	//ifstream infile("2017-21.txt");
-
-	/*
+	ifstream infile("2017-21.txt");
+    vector<vector<string>> inputList;
 	
-	//god awful parsing
+	
 	string s;
 	while(getline(infile,s)){
 		vector<string> line;
 		stringstream ss(s);
 		string word;
 		while(ss >> word){
-			word = word.substr(3);
-			while(word[word.length() - 1] == '>' || word[word.length() - 1] == ','){
-				word.pop_back();
-			}
 			line.push_back(word);
 		}
-		vector<vector<long>> particle;
-		for(int i = 0; i < line.size(); i++){
-			string thisLine = line[i];
-			replace(thisLine.begin(), thisLine.end(), ',', ' ');
-			stringstream stream(thisLine);
-			int l;
-			vector<long> xyz;
-			string token;
-			while(getline(stream, token, ' ')){
-				l = stoi(token);
-				xyz.push_back(l);
-			}
-			particle.push_back(xyz);
-		}
-		master.push_back(particle);
+        inputList.push_back(line);
 	}
-	*/
+	
 
 	vector<vector<char>> canvas;
 	vector<vector<char>> small;
+    vector<vector<char>> four;
+
+	four.push_back({'.','#','.','.'});
+	four.push_back({'.','.','#','.'});
+	four.push_back({'.','#','.','.'});
+	four.push_back({'.','.','.','#'});
 
 	small.push_back({'.','#'});
 	small.push_back({'.','.'});
@@ -88,6 +76,39 @@ int main(){
 	}
 
 	return 0;
+
+
+}
+
+vector<vector<vector<vector<char>>>> split(vector<vector<char>> canvas){
+    int cs = canvas.size();
+    vector<vector<vector<vector<char>>>> output;
+    if(canvas.size() % 2 == 0){
+        for(int i = 0; i < cs; i += 2){
+            vector<vector<vector<char>>> row;
+            for(int j = 0; j < cs; j+= 2){
+                vector<vector<char>> chunk;
+                chunk.push_back({canvas[i][j], canvas[i][j+1]});
+                chunk.push_back({canvas[i+1][j], canvas[i+1][j+1]});
+                row.push_back(chunk);
+            }
+            output.push_back(row); 
+        }
+    }
+    else{
+        for(int i = 0; i < cs; i += 3){
+            vector<vector<vector<char>>> row;
+            for(int j = 0; j < cs; j+= 3){
+                vector<vector<char>> chunk;
+                chunk.push_back({canvas[i][j], canvas[i][j+1], canvas[i][j+2]});
+                chunk.push_back({canvas[i+1][j], canvas[i+1][j+1], canvas[i+1][j+2]});
+                chunk.push_back({canvas[i+2][j], canvas[i+2][j+1], canvas[i+2][j+2]});
+                row.push_back(chunk);
+            }
+            output.push_back(row); 
+        }
+    }
+    return output;
 }
 
 vector<vector<char>> flip(vector<vector<char>> canvas, bool vertical){
@@ -117,4 +138,13 @@ vector<vector<char>> rotate(vector<vector<char>> canvas, bool clockwise){
 		temp = rotate(rotate(rotate(canvas, true), true), true);
 	}
 	return temp;
+}
+
+vector<vector<char>> draw(string flat){
+    vector<vector<char>> output;
+
+
+
+    
+    return output;
 }
