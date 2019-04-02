@@ -2,17 +2,25 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <thread>
+#include <queue>
+#include <chrono>
 
 using namespace std;
 
+void runProgram(vector<vector<string>> &inputList, vector<long> &vals,
+               queue<long> &inqueue, queue<long> &outqueue, int &returnVal, bool &timer, bool &otherTimer);
 
 int main(){
 
-	ifstream infile("test-18.txt");
+	ifstream infile("2017-18.txt");
 	vector<vector<string>> inputList;
 
-    vector<long> vals(26,0);
-    int snd;
+    vector<long> vals1(26,0);
+    vector<long> vals2(26,0);
+
+    queue<long> queue1;
+    queue<long> queue2;
 
 	string s;
 	while(getline(infile,s)){
@@ -27,13 +35,45 @@ int main(){
 		inputList.push_back(temp);
 	}
 
+    vals2['p' - 'a'] = 1;
+
+    int sendCount1;
+    int sendCount2;
+
+    bool timer1 = false;
+    bool timer2 = false;
+    
+    thread first(runProgram, ref(inputList), ref(vals1), ref(queue1), ref(queue2), ref(sendCount1), ref(timer1), ref(timer2));
+    thread second(runProgram, ref(inputList), ref(vals2), ref(queue2), ref(queue1), ref(sendCount2), ref(timer2), ref(timer1));
+
+    first.join();
+    second.join();
+
+    cout << "send count for first program " << sendCount2 << endl;
+
+    
+
+	return 0;
+}
+
+void runProgram(vector<vector<string>> &inputList, vector<long> &vals,
+               queue<long> &inqueue, queue<long> &outqueue, int &returnVal, bool &timer, bool &otherTimer){
+    int sendCount = 0;
+    int programID = vals['p' - 'a'];
     for(int i = 0; i < inputList.size(); i++){
         vector<string> &command = inputList[i];
-
         if(command[0] == "snd"){
-            int reg = command[1][0] - 'a';
-            cout << "Playing register " << command[1] << " with freq " << vals[reg] << endl;
-            snd = vals[reg];
+            bool is_reg = command[1][0] >= 'a' && command[1][0] <= 'z';
+            long reg;
+            if(!is_reg){
+                reg = stoi(command[1]);
+            }
+            else{
+                reg = vals[command[1][0] - 'a'];
+            }
+            outqueue.push(reg);
+            sendCount++;
+
         }
         else if(command[0] == "set"){
             int reg = command[1][0] - 'a';
@@ -101,9 +141,22 @@ int main(){
         }
         else if(command[0] == "rcv"){
             int reg = command[1][0] - 'a';
-            if(vals[reg] != 0){
-                cout << snd << endl;
-                return 0;
+            if(inqueue.size() > 0){
+                //cout << "received" << endl; //this is vital!
+                timer = false;
+                vals[reg] = inqueue.front();
+                inqueue.pop();
+            }
+            else{
+                //waiting
+                timer = true;
+                i--;
+                cout << programID << " waiting" << endl;
+                if(otherTimer){
+                    cout << "DEADLOCK" << endl;
+                    returnVal = sendCount;
+                    return;
+                }
             }
         }
         else if(command[0] == "jgz"){
@@ -127,22 +180,8 @@ int main(){
                 i += (jumpAmount - 1);
             }
         }
-        cout << "Line Number: " << i << endl;
-        for(char l = 'a'; l <= 'z'; l++){
-            cout << l;
-            int spaces = to_string(vals[l-'a']).length();
-            for(int z = 0; z < spaces; z++){
-                cout << " ";
-            }
-        }
-        cout << "\n";
-        for(auto v : vals){
-            cout << v << " ";
-        }
-        cout << "\n" << endl;
+    this_thread::sleep_for(chrono::microseconds(1));
     }
-
-
-	return 0;
+    returnVal = sendCount;
+    return;
 }
-
