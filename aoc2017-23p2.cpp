@@ -31,13 +31,7 @@ int main(){
 
     for(int i = 0; i < inputList.size(); i++){
         vector<string> &command = inputList[i];
-
-        if(command[0] == "snd"){
-            int reg = command[1][0] - 'a';
-            cout << "Playing register " << command[1] << " with freq " << vals[reg] << endl;
-            snd = vals[reg];
-        }
-        else if(command[0] == "set"){
+        if(command[0] == "set"){
             int reg = command[1][0] - 'a';
             bool y_reg = command[2][0] >= 'a' && command[2][0] <= 'z';
             int reg2;
