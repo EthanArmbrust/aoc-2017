@@ -10,7 +10,7 @@ void maxBridge(vector<pair<int,int>> unused, vector<pair<int,int>> used, int ope
 
 int main(){
 
-	ifstream infile("test24.txt");
+	ifstream infile("2017-24.txt");
     vector< pair<int,int> > bridges;
 	
     //parse	
@@ -27,6 +27,8 @@ int main(){
     maxBridge(bridges, blank, 0); 
 
     int max = 0;
+	int maxLength = 0;
+	vector<vector<pair<int,int>>> longest;
     vector<pair<int,int>> max_list;
     for(auto b : b_list){
         int b_sum = 0;
@@ -37,23 +39,32 @@ int main(){
             max = b_sum;
             max_list = b;
         }
-    }
 
-    cout << "ALL POSSIBLE COMBOS" << endl;
-    for(auto some : b_list){
-        for(auto br : some){
-            cout << br.first << "/" << br.second << " - ";
+		if(b.size() > maxLength){
+			longest.clear();	
+			longest.push_back(b);
+			maxLength = b.size();
+		}
+		else if(b.size() == maxLength){	
+			longest.push_back(b);
+		}
+    }
+	
+	int strongest = 0;
+	for(auto b : longest){	
+        int b_sum = 0;
+        for(auto bridge : b){
+            b_sum += bridge.first + bridge.second;
         }
-        cout << "\n";
-    }
-    cout << "\n--------------\n";
+        if(b_sum > strongest){
+            strongest = b_sum;
+        }
+	}
 
-    for(auto br : max_list){
-        cout << br.first << "/" << br.second << " - ";
-    }
-    cout << "\n";
+	
     
-    cout << max << endl;
+    cout << "Part 1: " << max << endl;
+	cout << "Part 2: " << strongest << endl;
 
 	return 0;
 }	
@@ -70,9 +81,11 @@ void maxBridge(vector<pair<int,int>> unused, vector<pair<int,int>> used, int ope
             if(unused[i].second == open){
                 newOpen = unused[i].first;
             }
-            used.push_back(unused[i]);
-            unused.erase(unused.begin() + i);
-            maxBridge(unused, used, newOpen);
+			auto newUsed(used);
+			auto newUnused(unused);
+            newUsed.push_back(unused[i]);
+            newUnused.erase(newUnused.begin() + i);
+            maxBridge(newUnused, newUsed, newOpen);
         }
     }
     if(bridgeEnd){
