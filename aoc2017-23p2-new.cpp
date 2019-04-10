@@ -27,32 +27,23 @@ int main(){
     do{
         f = 1;
         d = 2;
-        do{
-            e = 2;
-            do{
-                g = d;
-                g *= e;
-                g -= b;
-                if( g == 0){
-                    f = 0;
-                }
-                e += 1;
-                g = e;
-                g -= b;
-            } while(g != 0);
-            d += 1;
-            g = d;
-            g -= b;
-        } while(g != 0);
+        e = 2;
+
+        for(d = 2; d*d <= b; d++){
+            if(b%d == 0){
+                f = 0;
+                break;
+            }
+        }
+
         if( f == 0){
             h += 1;
         }
         g = b;
         g -= c;
-        if( g == 0){
-            cout << h << endl;
-            return 0;
-        }
         b += 17;
-    } while(true); 
+    } while(g != 0); 
+
+    cout << h << endl;
+    return 0;
 }
