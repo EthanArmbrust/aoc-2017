@@ -24,15 +24,15 @@ int main(){
 	char next_state = 'A';
 	int diag_num = 12173597;
 
-	vector<int> tape(50, 0);
-	int cursor = 25;
+	vector<int> tape(1000000, 0);
+	int cursor = tape.size() / 2;
 
-	State a('A', 1, 0, 1, -1, 'B', 'C');
-	State b('B', 1, 1, -1, 1, 'A', 'D');
-	State c('C', 1, 0, 1, -1, 'A', 'E');
-	State d('D', 1, 0, 1, 1, 'A', 'B');
-	State e('E', 1, 1, -1, -1, 'F', 'C');
-	State f('F', 1, 1, 1, 1, 'D', 'A');
+	State a{'A', 1, 0, 1, -1, 'B', 'C'};
+	State b{'B', 1, 1, -1, 1, 'A', 'D'};
+	State c{'C', 1, 0, 1, -1, 'A', 'E'};
+	State d{'D', 1, 0, 1, 1, 'A', 'B'};
+	State e{'E', 1, 1, -1, -1, 'F', 'C'};
+	State f{'F', 1, 1, 1, 1, 'D', 'A'};
 	
 	vector<State> states{a,b,c,d,e,f};
 
@@ -55,8 +55,24 @@ int main(){
 		   	next_state = currentState.oneState;
 		}
 
-
+        if(cursor < 0){
+            for(int j = 0; j < 10; j++){
+                tape.insert(tape.begin(), 0);
+            }
+        }
+        if(cursor >= tape.size()){
+            for(int j = 0; j < 10; j++){
+                tape.push_back(0);
+            }
+        }
 	}
+
+    int sum = 0;
+    for(auto n : tape){
+        sum += n;
+    }
+
+    cout << sum << endl;
 
 	return 0;
 }
